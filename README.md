@@ -1,184 +1,262 @@
-# SocietyOps — The Autonomous Society Operations Network
+# 🏙️ SocietyOps — The Autonomous Society Operations Network
 
-> **Tagline:** Don't just report problems. Resolve them together.
+### Don't just report problems. Resolve them together.
 
-SocietyOps is an AI-powered residential society operations platform where specialized autonomous AI agents collaborate with residents, security guards, maintenance technicians, vendors, and society managers to resolve real-world apartment maintenance incidents.
+**SocietyOps** is an AI-powered, multi-agent residential society operations platform designed to transform how residential communities manage complaints, coordinate maintenance, communicate with vendors, and verify issue resolution.
 
-Built with **Gemini**, **React + TypeScript + Tailwind CSS**, **Express / FastAPI**, and a two-way Discord connection for Switch-connected chat rooms.
+Instead of treating every complaint as an isolated ticket, SocietyOps brings specialized AI agents, residents, technicians, vendors, and society managers together in a collaborative operations network powered by **Switch**.
 
----
+## 🌟 The Problem
 
-## 🌟 Key Highlights & Innovations
+Residential societies often face operational challenges:
 
-1. **Switch Rooms collaboration through Discord:**
-   - **Triage Agent (@triage-agent):** Classifies complaints, parses flat/building metadata, extracts urgency, alerts operations rooms.
-   - **Intelligence Agent (@intel-agent):** Cross-references historical tickets, spatial conduits, and gravity drainage paths to uncover common root causes.
-   - **Dispatch Agent (@dispatch-agent):** Optimizes technician skills, balances trade availability, and packages work orders.
-   - **Vendor Agent (@vendor-agent):** Benchmarks contractor quotations, verifies licenses & SLAs, and negotiates emergency rates.
-   - **Verification Agent (@verify-agent):** Audits before/after imagery, verifies checklist criteria, and prevents premature closures.
-   - **Memory Agent (@memory-agent):** Tracks chronic infrastructure defects and formulates predictive preventive maintenance schedules.
-   - Incident and agent messages are posted to configured Discord channels that are connected as Switch rooms. Human messages and Switch agent replies in those channels are received back by SocietyOps.
-   - The SocietyOps browser SSE stream only updates the UI; it is not presented as the Switch transport.
+- Complaints get delayed or lost between residents and management.
+- Multiple reports about the same issue are handled separately.
+- Technician and vendor coordination is time-consuming.
+- Managers lack visibility into ongoing incidents.
+- Issues are sometimes marked resolved without proper verification.
+- Recurring maintenance problems are difficult to identify.
 
-2. **Signature Innovation: Incident Correlation Graph:**
-   - Detects hidden infrastructure patterns across multiple flats (e.g. B-204 ceiling leak + B-304 floor dampness + Ground Lobby lift water pooling).
-   - Maps failure to shared vertical riser shaft #BR-4 between 2nd & 3rd floor slab joint.
-   - Explicitly distinguishes between **AI Hypotheses** and **Field-Verified Findings**.
+## 💡 Our Solution
 
-3. **Sovereign Human Approval Gate:**
-   - Autonomous agents do not spend money without human authorization.
-   - Financial decisions, contractor callouts, and critical incident closures require explicit manager approval.
+SocietyOps introduces an intelligent, collaborative workflow where AI agents help investigate, coordinate, and track society incidents from reporting to verified resolution.
 
-4. **Proof of Resolution (Strict QA):**
-   - No ticket can be closed simply because a technician says it's fixed.
-   - Requires side-by-side Before & After photographic evidence, a 5-point completion checklist (pressure/moisture tests), and resident sign-off.
+The platform combines AI-powered intelligence with human approvals to make society operations more transparent, efficient, and accountable.
 
-5. **Two-way Switch chat bridge:**
-   - Discord Gateway receives human and Switch-agent messages from configured channels; Discord REST publishes SocietyOps messages.
-   - Dedicated logical rooms: `#society-control`, `#incident-water-leak-001`, `#vendor-coordination`, `#resolution-review`.
-   - The app reports local preview, connecting, connected, and delivery-failed states instead of claiming a connection when one is not configured.
+## ✨ Key Features
 
----
+### 1. 🤖 AI-Powered Incident Triage
+Automatically analyzes incoming complaints, categorizes incidents, and helps determine their priority.
 
-## 🏗️ Architecture & Project Structure
+### 2. 🧠 AI Incident Detective
+Correlates multiple complaints based on location, time, and description to identify possible common causes.
 
+### 3. 🔄 Multi-Agent Collaboration with Switch
+Specialized AI agents collaborate through shared Switch rooms, exchanging updates and coordinating operational tasks.
+
+### 4. 🚚 Smart Dispatch Coordination
+Helps coordinate technician assignments and maintenance activities.
+
+### 5. 🏢 Vendor Coordination
+Supports vendor availability and quotation comparison to assist management decisions.
+
+### 6. ✅ Evidence-Based Resolution Verification
+Tracks technician evidence and verification status before an incident is considered resolved.
+
+### 7. 🛡️ Human-in-the-Loop Approvals
+Keeps society managers involved in important decisions such as dispatch, vendor selection, expenses, and incident closure.
+
+### 8. 📊 Society Intelligence
+Helps identify recurring incidents, maintenance patterns, and operational risks.
+
+### 9. 📝 Audit Trail
+Maintains an operational history of incidents, decisions, agent activities, and resolution updates.
+
+## 🏗️ System Architecture
+
+The architecture consists of five major layers:
+
+1. **Presentation Layer:** Society dashboard, resident complaint portal, and manager approval center.
+2. **Backend Layer:** FastAPI services for incidents, dispatch, approvals, evidence, and intelligence.
+3. **Switch Collaboration Layer:** Shared rooms that enable communication between specialized AI agents.
+4. **Autonomous Agent Layer:** Triage, Intelligence, Dispatch, Vendor, Verification, and Memory agents.
+5. **Data Layer:** Database, evidence storage, and audit logs.
+
+```mermaid
+flowchart TB
+    U["Residents • Guards • Managers • Technicians"]
+    UI["SocietyOps Web Dashboard & Complaint Portal"]
+    API["Backend Services — FastAPI"]
+
+    subgraph SW["Switch — Multi-Agent Collaboration"]
+        R1["society-control"]
+        R2["incident-water-leak-001"]
+        R3["vendor-coordination"]
+    end
+
+    subgraph AG["Specialized AI Agents"]
+        A1["Triage Agent"]
+        A2["Intelligence Agent"]
+        A3["Dispatch Agent"]
+        A4["Vendor Agent"]
+        A5["Verification Agent"]
+        A6["Memory Agent"]
+    end
+
+    DB[("Database & Evidence Storage")]
+    AUDIT[("Audit Logs")]
+
+    U --> UI --> API
+    API <--> SW
+    SW <--> AG
+    API <--> DB
+    AG --> AUDIT
+    A5 --> API
 ```
-societyops-ai/
-├── src/                          # React Frontend & Application UI
-│   ├── components/
-│   │   ├── Sidebar.tsx           # Dark enterprise navigation & live Switch status
-│   │   ├── Header.tsx            # Global search, notification bell & quick actions
-│   │   ├── CommandCenter.tsx     # Operations KPI dashboard & real-time radar
-│   │   ├── IncidentsView.tsx     # Incident management desk with filters
-│   │   ├── IncidentDetailModal.tsx # Full timeline, root cause hypothesis, & actions
-│   │   ├── CreateIncidentModal.tsx # Ingestion form with demo presets & AI triage
-│   │   ├── AgentsView.tsx        # 6 specialized agents, prompts & telemetry
-│   │   ├── SwitchHubView.tsx     # Real-time Switch rooms & Discord bridge
-│   │   ├── CorrelationGraphView.tsx # Interactive vertical shaft schematic & hypothesis
-│   │   ├── ApprovalsView.tsx     # Human approval gatekeeper for spend & dispatch
-│   │   ├── VerificationView.tsx  # Proof of resolution visual comparisons & audit
-│   │   ├── SubmitEvidenceModal.tsx # Technician work submission & checklist
-│   │   ├── VendorsView.tsx       # Vetted vendor directory & quote benchmarking
-│   │   └── AuditTrailView.tsx    # Immutable cryptographically traced event journal
-│   ├── server/                   # Backend services & in-memory/JSON store
-│   │   ├── store.ts              # Operations state, SSE broadcasting, demo runner
-│   │   ├── discordSwitchBridge.ts # Discord Gateway receive + REST send for Switch-connected channels
-│   │   ├── geminiService.ts      # Gemini 3.8 Flash agent reasoning service
-│   │   └── mockData.ts           # Realistic seed dataset for Grand Orchids Residency
-│   ├── types.ts                  # Shared TypeScript domain contracts
-│   └── App.tsx                   # Main SPA controller & SSE event router
-├── server.ts                     # Full-Stack Express server with Vite middleware
-├── backend/                      # Python FastAPI stack
-│   ├── app/
-│   │   └── main.py               # FastAPI endpoints & SQLAlchemy models
-│   └── requirements.txt          # Python dependencies
-├── switch/                       # CLI for triggering a real SocietyOps incident
-│   ├── switch_client.py          # SocietyOps HTTP API client
-│   └── run_scenario.py           # Requires a connected Switch/Discord room; no fake conversation
-└── docs/                         # Architecture & judging references
-```
 
----
+## 🔄 How SocietyOps Works
 
-## 🚀 Quickstart & Running the App
+**Example: Water Leakage in Block B**
 
-### Option A: Web Full-Stack Mode (Instant AI Studio Run)
+1. A resident reports water leakage in apartment B-204.
+2. The Triage Agent analyzes the complaint and assigns a priority.
+3. The Intelligence Agent checks whether other complaints, such as a damp ceiling in B-304 or water in the lobby, may be related.
+4. Agents share findings through the relevant Switch room.
+5. The Dispatch Agent helps coordinate a technician.
+6. The Vendor Agent assists with vendor coordination when required.
+7. The society manager reviews and approves consequential decisions.
+8. The technician submits resolution evidence.
+9. The Verification Agent checks the submitted evidence.
+10. The incident moves towards closure after the required verification and approval.
 
-The repository is configured as an end-to-end full-stack app on Port 3000:
+**Result:** A collaborative, traceable workflow instead of disconnected complaint handling.
+
+## 🔌 Why Switch?
+
+Switch is the collaboration infrastructure at the heart of SocietyOps.
+
+Rather than relying on isolated AI functions, SocietyOps uses shared rooms to enable specialized agents to communicate and coordinate their work.
+
+**Proposed Switch Rooms:**
+
+| Room | Purpose |
+|---|---|
+| `society-control` | Overall operational coordination |
+| `incident-water-leak-001` | Incident-specific investigation |
+| `vendor-coordination` | Vendor and maintenance coordination |
+| `resolution-review` | Evidence and closure review |
+
+Switch enables agents and humans to work together in a shared communication environment.
+
+## 🧰 Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js, React, TypeScript |
+| Styling | Tailwind CSS |
+| UI Components | shadcn/ui, Lucide |
+| Animations | Framer Motion |
+| Backend | Python, FastAPI |
+| Data Validation | Pydantic |
+| Database | SQLite / PostgreSQL |
+| AI | Configurable LLM provider |
+| Agent Collaboration | Switch |
+| Version Control | Git & GitHub |
+
+*Update this table to match the technologies actually implemented in the final build.*
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js and npm
+- Python 3.10+
+- Git
+- Docker Desktop (for a local Switch setup)
+- A configured AI provider/API key, if required by your implementation
+- Switch Console and an authenticated supported agent provider
+
+### 1. Clone the Repository
 
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Run the dev server (Express backend + Vite React frontend)
-npm run dev
+git clone https://github.com/Tanya-garg10/societyops-ai.git
+cd societyops-ai
 ```
 
-Visit `http://localhost:3000` to open the SocietyOps Command Center.
-
-### Connect Switch Rooms to SocietyOps
-
-The current Switch Rooms setup connects agents to a messaging app; SocietyOps uses Discord as that chat transport. Follow the [Switch quickstart](https://docs.switchagents.ai/switch-rooms/getting-started/index.md), connect Discord, and create the four SocietyOps channels as Switch rooms. Add the Switch agents you want to involve to those rooms.
-
-1. Create a Discord bot for SocietyOps and invite it to the same server/channels. Enable **Guilds**, **Guild Messages**, and the privileged **Message Content Intent** in the Discord Developer Portal. Grant it View Channel, Read Message History, and Send Messages permissions.
-2. Copy the channel IDs (enable Developer Mode in Discord) and set the variables below. `DISCORD_ROOM_CHANNELS` maps SocietyOps room IDs to Discord channel IDs. `DISCORD_SWITCH_AGENT_IDS` is optional; when configured, SocietyOps mentions the Intelligence Agent on triage handoff.
-3. Restart `npm run dev`. The Switch Collaboration view should show Discord as connected and list connected rooms. Send a test message and verify it appears in the Discord channel; reply as a human or Switch agent and verify it appears in SocietyOps.
-4. Create an incident from SocietyOps. Triage posts the report and asks the Intelligence Agent to investigate in `#incident-water-leak-001`. Dispatch remains gated by manager approval.
-
-Set clear instructions on the Switch agents in those rooms. For example: the Intelligence Agent should review the reported location against related incidents and return its evidence and uncertainty; the Dispatch Agent must prepare options but never commit spend or dispatch before an explicit manager approval; the Verification Agent must request missing proof rather than claim a repair is complete.
-
-The Discord bot is the SocietyOps bridge, while Switch agents use the Switch-managed Discord connection. The app can verify its own Discord connection, but cannot verify that each channel is also configured as a Switch room. Do not expose the bot token in browser code or commit it. The bridge only consumes text messages; attachments remain in Discord.
-
-For official setup details, see [Connect Discord](https://docs.switchagents.ai/switch-rooms/deploy/messaging-apps/discord.md). Switch does not document the legacy `api.switchagents.ai/v1` / SSE protocol previously claimed by this project, so this app does not use or advertise that endpoint.
-
-### Option B: Python FastAPI Backend (Standalone)
+### 2. Configure the Backend
 
 ```bash
 cd backend
-python -m venv .venv
-# Windows: .\.venv\Scripts\Activate.ps1
-# Mac/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+python -m venv venv
 ```
 
-The standalone FastAPI backend does not run the Discord/Switch bridge. Use the TypeScript server for Switch-connected chat.
+Activate the environment on Windows:
 
-### Option C: Run Switch Agent Scenario CLI
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
 
 ```bash
-cd switch
-python run_scenario.py
+pip install -r requirements.txt
 ```
 
----
+Configure environment variables using the provided `.env.example` file.
 
-## 🎬 1-Click Signature Hackathon Demo
+Start the backend:
 
-Click The **"1-Click Autonomous Demo"** button on the Command Center banner runs the SocietyOps workflow. It includes scripted demo steps and is not the live human–Switch collaboration proof. For the hackathon demo, create a new incident and complete the investigation with a real Switch agent and a human in the connected Discord/Switch room. SocietyOps-generated messages are delivered to configured Discord channels; incoming Switch-agent replies are never fabricated.
-
-1. **Resident Report:** Priya Sharma reports water leaking from kitchen ceiling in Flat B-204.
-2. **AI Triage:** Triage Agent parses the complaint, sets priority, posts an alert to `#society-control`, and asks the Intelligence Agent to investigate in `#incident-water-leak-001`.
-3. **Root-Cause Correlation:** SocietyOps' Gemini-backed analysis checks the seeded/historical incident records and posts its hypothesis to `#incident-water-leak-001`. Switch agents and the manager can reply in that same connected Discord channel; their text messages appear in the SocietyOps view.
-4. **Vendor & Dispatch Evaluation:** Dispatch Agent routes Senior Plumber Rajesh Kumar and Vendor Agent benchmarks quotes from AquaFix ($180) vs RapidPlumb ($240).
-5. **Human Approval Gate:** Operations Manager authorizes $180 expenditure in the Approval Gate.
-6. **Technician Repair:** Plumber isolates valve, replaces damaged coupler, and submits Before & After photos with 5-point hydrostatic pressure test.
-7. **Verification Audit:** Verification Agent audits evidence, confirms criteria are met, and marks ticket RESOLVED.
-8. **Audit Trail & Metrics:** Workflow events are recorded in the app's audit log with trace IDs. The in-memory app store is not permanent storage.
-
----
-
-## 🔐 Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Required for autonomous Gemini AI triage & correlation
-GEMINI_API_KEY="your-gemini-api-key"
-
-# Optional: two-way Discord bridge for channels connected to Switch
-DISCORD_BOT_TOKEN="your-discord-bot-token"
-DISCORD_ROOM_CHANNELS="{\"society-control\":\"123456789012345678\",\"incident-water-leak-001\":\"123456789012345679\",\"vendor-coordination\":\"123456789012345680\",\"resolution-review\":\"123456789012345681\"}"
-
-# Optional: Discord user IDs for Switch agents to mention (e.g. on Triage handoff)
-DISCORD_SWITCH_AGENT_IDS="{\"@intel-agent\":\"123456789012345682\"}"
+```bash
+uvicorn main:app --reload
 ```
 
-Do not use the example numeric IDs as real channel IDs. Configure only the channels/agent IDs in your own Discord server. `DISCORD_SWITCH_AGENT_IDS` may be left empty; ensure the Intelligence Agent is instructed in Switch to monitor its room if you do not set a mention ID.
+### 3. Configure the Frontend
 
-Wispr Flow is a separate voice-to-text tool for dictating prompts and messages; it does not connect or relay messages between agents. For the hackathon's Code with Wispr side track, follow the [submission instructions](https://www.wemakedevs.org/hackathons/switch) and attach the usage scorecard from Wispr Flow Insights.
+Open a new terminal:
 
----
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## 🏆 Hackathon Submission Checklist
+### 4. Configure Switch
 
-- [x] Multi-Agent Network with 6 distinct autonomous agents
-- [x] Two-way Discord Gateway/REST bridge for Switch-connected rooms
-- [ ] Configure Discord bot and Switch rooms with your own credentials before the live demo
-- [x] Signature feature: Incident correlation graph (Block B vertical riser)
-- [x] Distinction between AI Hypotheses and Verified Findings
-- [x] Human Approval Gate for financial and safety governance
-- [x] Proof of Resolution with Before/After photos & checklist verification
-- [x] Real-time Server-Sent Events (SSE) updates
-- [x] Immutable audit trail with export capability
-- [x] Responsive enterprise SaaS command center UI
+1. Install and start Switch Console.
+2. Configure a supported agent provider.
+3. Install and authenticate the Switch connector as required.
+4. Onboard the SocietyOps agents.
+5. Create the required shared rooms.
+6. Configure the application to use your actual Switch setup.
+
+Refer to the official documentation:
+
+- [Switch Documentation](https://docs.switchagents.ai/)
+- [Switch GitHub Repository](https://github.com/sandbox-quantum/switch)
+- [Switch Getting Started](https://www.switchagents.ai/get-started)
+
+*Note: Follow the actual project configuration and agent onboarding instructions. Switch does not bundle the underlying AI models.*
+
+## 🔐 Responsible AI & Human Oversight
+
+SocietyOps is designed around responsible automation:
+
+- Important operational actions require human approval.
+- AI-generated root-cause suggestions are treated as hypotheses until verified.
+- Evidence is required for resolution verification.
+- Operational actions should be traceable through audit logs.
+- Sensitive resident information should only be accessible to authorized users.
+- Critical emergencies must follow appropriate emergency escalation procedures rather than relying solely on AI coordination.
+
+## 🌍 Impact
+
+SocietyOps aims to create:
+
+- Faster incident response
+- Better communication between stakeholders
+- More transparent maintenance operations
+- Improved accountability
+- Smarter preventive maintenance
+- More reliable residential communities
+
+## 🔮 Future Scope
+
+- WhatsApp and Telegram-based resident reporting
+- Multilingual voice-based complaint registration
+- Predictive maintenance using historical incident data
+- IoT-based water leakage and equipment monitoring
+- Advanced society risk heatmaps
+- Resident feedback and satisfaction analytics
+- Integration with real vendor and facility-management systems
+
+Our goal is to demonstrate how collaborative AI agents can move beyond answering questions and help coordinate real-world operational workflows.
+
+## 👩‍💻 Built By
+
+**Tanya Garg**
+
+### SocietyOps
+
+**Don't just report problems. Resolve them together.** 🏙️
+
+*Building smarter, more connected, and more accountable residential communities with collaborative AI.*
