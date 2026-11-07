@@ -1,0 +1,6 @@
+{
+  "name": "SocietyOps — Autonomous Society Operations Network",
+  "description": "Multi-agent autonomous residential society operations network powered by Switch protocol and Gemini AI for intelligent incident triage, root-cause correlation, technician dispatch, and proof of resolution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
